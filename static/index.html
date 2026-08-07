@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>成本部工作台</title>
+    <link rel="stylesheet" href="/static/styles.css?v=202608011015">
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="/static/yanjian-logo.png" alt="烟建集团">
+        <div class="brand-divider"></div>
+        <div class="brand-title">
+          <h1>成本部工作台</h1>
+          <p>报表汇总 · 数据校验 · 成果导出</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="workbench">成本部工作台</button>
+        <button class="nav-item" data-view="auto-reports" data-subtitle="上传基层报表，自动编制竣工结算报表和成本风险等级评定表。">竣工结算报表</button>
+        <button class="nav-item" data-view="pm-warning" data-subtitle="接入 PM 平台项目数据，形成红蓝预警跟踪台账。">PM平台红蓝预警</button>
+        <button class="nav-item" data-view="material-price" data-subtitle="导入采购清单和历史价格，完成材料采购价格比对。">材料采购价格比对</button>
+        <button class="nav-item" data-view="price-library" data-subtitle="维护劳务分包、专业分包价格库，沉淀企业成本价格数据。">分包价格库</button>
+        <button class="nav-item" data-view="blacklist-query" data-subtitle="查询黑名单企业及关联企业，辅助供应商风险识别。">黑名单关联查询</button>
+        <button class="nav-item" data-view="collusion-check" data-subtitle="比对投标文件和报价数据，识别围标串标异常线索。">围标串标识别</button>
+        <button class="nav-item" data-view="uploads">上传记录</button>
+        <button class="nav-item" data-view="settings">报表接口</button>
+      </nav>
+    </aside>
+
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">成本部工作台</h2>
+          <p id="pageSubtitle">选择报表类型，上传基层表，校验后生成当前期次汇总。</p>
+        </div>
+        <div class="top-actions">
+          <span id="appStatusBadge" class="app-status-badge">连接中</span>
+          <select id="reportFilter" title="报表类型"></select>
+          <select id="pmWarningTopPlatformFilter" title="红蓝预警数据来源">
+            <option value="all" selected>两个平台合计</option>
+          </select>
+          <input id="periodFilter" type="month" title="报表期次">
+          <button id="issuesBtn">问题反馈</button>
+          <button id="refreshBtn" class="icon-btn" title="刷新">↻</button>
+        </div>
+      </header>
+
+      <section id="workbench" class="view active">
+        <section class="oa-home">
+          <div class="oa-carousel">
+            <img src="/static/oa-slide-1.png" alt="企业文化 1">
+            <img src="/static/oa-slide-2.png" alt="企业文化 2">
+            <img src="/static/oa-slide-3.png" alt="企业文化 3">
+            <img src="/static/oa-slide-4.png" alt="企业文化 4">
+            <img src="/static/oa-slide-5.png" alt="企业文化 5">
+            <img src="/static/oa-slide-6.png" alt="企业文化 6">
+          </div>
+        </section>
+
+        <section class="progress-board" id="workbenchProgressBoard">
+          <div class="progress-head">
+            <h3>应用建设进展</h3>
+            <span>完成比例</span>
+          </div>
+          <div class="progress-layout">
+            <section class="bar-panel" id="workbenchProgressBars">
+              <div class="bar-row">
+                <span>PM红蓝预警</span>
+                <div class="bar-track"><i style="--value: 18%"></i></div>
+                <strong>18%</strong>
+              </div>
+              <div class="bar-row">
+                <span>材料价格比对</span>
+                <div class="bar-track"><i style="--value: 15%"></i></div>
+                <strong>15%</strong>
+              </div>
+              <div class="bar-row">
+                <span>竣工结算报表</span>
+                <div class="bar-track"><i style="--value: 82%"></i></div>
+                <strong>82%</strong>
+              </div>
+              <div class="bar-row">
+                <span>分包价格库</span>
+                <div class="bar-track"><i style="--value: 12%"></i></div>
+                <strong>12%</strong>
+              </div>
+              <div class="bar-row">
+                <span>黑名单关联查询</span>
+                <div class="bar-track"><i style="--value: 8%"></i></div>
+                <strong>8%</strong>
+              </div>
+              <div class="bar-row">
+                <span>围标串标识别</span>
+                <div class="bar-track"><i style="--value: 8%"></i></div>
+                <strong>8%</strong>
+              </div>
+            </section>
+            <section class="line-panel" id="workbenchTrendPanel">
+              <div class="line-title">
+                <span>整体推进趋势</span>
+                <strong>24%</strong>
+              </div>
+              <svg class="trend-chart" viewBox="0 0 360 160" role="img" aria-label="整体推进趋势">
+                <line x1="28" y1="20" x2="28" y2="132"></line>
+                <line x1="28" y1="132" x2="340" y2="132"></line>
+                <polyline points="36,126 92,118 148,104 204,86 260,72 324,48"></polyline>
+                <circle cx="36" cy="126" r="4"></circle>
+                <circle cx="92" cy="118" r="4"></circle>
+                <circle cx="148" cy="104" r="4"></circle>
+                <circle cx="204" cy="86" r="4"></circle>
+                <circle cx="260" cy="72" r="4"></circle>
+                <circle cx="324" cy="48" r="4"></circle>
+                <text x="32" y="150">1月</text>
+                <text x="88" y="150">2月</text>
+                <text x="144" y="150">3月</text>
+                <text x="200" y="150">4月</text>
+                <text x="256" y="150">5月</text>
+                <text x="318" y="150">6月</text>
+              </svg>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section id="uploads" class="view">
+        <section class="table-section">
+          <div class="section-head">
+            <h3>上传记录</h3>
+            <button id="clearUploadsBtn" class="danger">一键清空</button>
+          </div>
+          <div class="table-wrap">
+            <table id="uploadsTable"></table>
+          </div>
+        </section>
+      </section>
+
+      <section id="pm-warning" class="view scenario-view">
+        <section class="warning-capture-panel">
+          <div class="capture-actions" id="pmWarningPlatformButtons">
+            <button class="platform-choice" type="button" data-pm-warning-platform="old-pm">四版平台</button>
+            <button class="platform-choice" type="button" data-pm-warning-platform="big-pm">大PM平台</button>
+            <button id="pmWarningStartBtn" class="primary" type="button">开始生成</button>
+            <button id="pmWarningExportBtn" type="button">导出Excel</button>
+            <button id="pmWarningClearBtn" class="danger" type="button">清空数据</button>
+          </div>
+          <div id="pmWarningCaptureStatus" class="capture-status"></div>
+        </section>
+        <section class="warning-summary" id="pmWarningSummary"></section>
+        <section class="warning-chart-section">
+          <div class="section-head compact">
+            <h3>红蓝预警占比</h3>
+            <div class="section-actions">
+              <select id="pmWarningCompanyFilter" title="统计范围">
+                <option value="all">集团</option>
+              </select>
+            </div>
+          </div>
+          <div id="pmWarningPieChart" class="warning-pie-wrap"></div>
+        </section>
+        <section class="table-section">
+          <div class="section-head">
+            <h3 id="pmWarningLedgerTitle">红蓝预警台账</h3>
+            <div class="section-actions">
+              <select id="pmWarningLevelFilter" title="预警等级">
+                <option value="all">全部预警</option>
+                <option value="红色">红色风险</option>
+                <option value="蓝色">蓝色提醒</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap pm-warning-table-wrap">
+            <table id="pmWarningTable"></table>
+          </div>
+        </section>
+      </section>
+
+      <section id="material-price" class="view scenario-view">
+        <section class="material-methods">
+          <section class="command-panel">
+            <div class="method-head">
+              <h3>平台抓取建表</h3>
+            </div>
+            <form id="materialTaskForm" class="command-form">
+              <label>
+                <span>分公司</span>
+                <select name="company" id="materialCompany"></select>
+              </label>
+              <label>
+                <span>开始时间</span>
+                <input name="startDate" type="date" required>
+              </label>
+              <label>
+                <span>结束时间</span>
+                <input name="endDate" type="date" required>
+              </label>
+              <label>
+                <span>材料关键词</span>
+                <input name="keyword" placeholder="可不填，如 钢筋、水泥">
+              </label>
+              <button class="primary" type="submit">抓取源数据并由小程序建表</button>
+            </form>
+          </section>
+          <section class="command-panel">
+            <div class="method-head">
+              <h3>导入数据建表</h3>
+            </div>
+            <form id="materialImportForm" class="command-form import-form">
+              <label>
+                <span>分公司</span>
+                <select name="company" id="materialImportCompany"></select>
+              </label>
+              <label>
+                <span>开始时间</span>
+                <input name="startDate" type="date" required>
+              </label>
+              <label>
+                <span>结束时间</span>
+                <input name="endDate" type="date" required>
+              </label>
+              <label class="file-field">
+                <span>源数据文件</span>
+                <input name="file" type="file" accept=".xlsx,.xls,.json" multiple required>
+              </label>
+              <button class="primary" type="submit">导入并建表</button>
+            </form>
+          </section>
+        </section>
+        <section class="table-section">
+          <div class="section-head">
+            <h3>材料价格任务</h3>
+            <button id="refreshMaterialTasksBtn" class="small">刷新</button>
+          </div>
+          <div class="table-wrap">
+            <table id="materialTasksTable"></table>
+          </div>
+        </section>
+        <section class="scenario-grid">
+          <article class="scenario-card"><h4>导入内容</h4><p>材料名称、规格型号、单位、采购价、采购时间、项目、供应商。</p></article>
+          <article class="scenario-card"><h4>比对口径</h4><p>同规格历史均价、近期最低价、项目间横向价差、供应商报价差异。</p></article>
+          <article class="scenario-card"><h4>输出成果</h4><p>异常价格清单、节超测算、供应商价格排名、核查建议。</p></article>
+        </section>
+        <section class="trend-section">
+          <div class="section-head">
+            <h3>大宗相同材料采购价格差异排行</h3>
+            <button id="refreshMaterialTrendBtn" class="small">刷新</button>
+          </div>
+          <div id="materialTrendChart" class="trend-board"></div>
+        </section>
+      </section>
+
+      <section id="auto-reports" class="view scenario-view">
+        <section class="upload-panel">
+          <form id="uploadForm">
+            <input name="period" id="period" type="month" hidden required>
+            <label class="file-field">
+              <span>Excel 文件</span>
+              <input name="file" type="file" accept=".xlsx,.xls" multiple required>
+            </label>
+            <button class="primary" type="submit">上传校验</button>
+          </form>
+        </section>
+
+        <section class="summary-grid" id="summaryCards"></section>
+
+        <section class="table-section">
+          <div class="section-head">
+            <h3>汇总结果</h3>
+            <div class="section-actions">
+              <button id="clearBtn" class="danger">一键清空</button>
+              <button id="exportBtn">导出 Excel</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="summaryTable"></table>
+          </div>
+        </section>
+      </section>
+
+      <section id="price-library" class="view scenario-view">
+        <section class="price-library-toolbar">
+          <form id="priceLibraryFilterForm" class="price-filter-form">
+            <div class="price-quick-row">
+              <select name="category" title="类型">
+                <option value="">全部类型</option>
+                <option value="劳务分包">劳务分包</option>
+                <option value="专业分包">专业分包</option>
+              </select>
+              <input name="keyword" placeholder="搜索施工内容、规格、项目、供应商">
+              <input name="company" placeholder="分公司">
+              <input name="region" placeholder="地区">
+              <input name="project" placeholder="项目">
+              <button class="primary" type="submit">查询</button>
+              <button id="priceLibraryResetBtn" type="button">重置</button>
+              <button id="priceLibraryExportBtn" type="button">导出Excel</button>
+            </div>
+            <details class="price-panel">
+              <summary>高级筛选</summary>
+              <div class="price-advanced-row">
+                <input name="major" placeholder="专业类别">
+                <select name="discipline" title="专业">
+                  <option value="">全部专业</option>
+                  <option value="建筑">建筑</option>
+                  <option value="安装">安装</option>
+                </select>
+                <input name="projectType" placeholder="工程类型/项目类型">
+                <input name="trade" list="priceTradeOptions" placeholder="工种">
+                <input name="process" list="priceProcessOptions" placeholder="工序">
+                <input name="startDate" type="date" title="开始日期">
+                <input name="endDate" type="date" title="结束日期">
+              </div>
+            </details>
+          </form>
+        </section>
+
+        <details class="price-maintenance-panel">
+          <summary>维护数据</summary>
+          <div class="price-maintenance-picker">
+            <input id="priceLibraryEditSearch" type="search" placeholder="输入项目、分项、供应商、合同编号查找记录">
+            <div class="price-edit-list-box">
+              <input id="priceLibraryListKeyword" type="search" placeholder="列表关键字筛选">
+              <div id="priceLibraryEditList" class="price-edit-list" aria-label="选择要维护的价格记录"></div>
+            </div>
+            <button id="priceLibrarySelectAllBtn" type="button">全选匹配</button>
+            <button id="priceLibraryClearSelectBtn" type="button">取消选择</button>
+            <button id="priceLibraryNewBtn" type="button">新增</button>
+            <button id="priceLibraryDeleteSelectedBtn" type="button" class="danger" hidden>删除选中记录</button>
+          </div>
+          <section class="price-library-entry">
+            <form id="priceLibraryForm" class="price-entry-form" hidden>
+              <select name="category" required>
+                <option value="劳务分包">劳务分包</option>
+                <option value="专业分包">专业分包</option>
+              </select>
+              <input name="company" placeholder="分公司">
+              <input name="major" placeholder="专业类别">
+              <select name="discipline" title="专业">
+                <option value="">自动识别专业</option>
+                <option value="建筑">建筑</option>
+                <option value="安装">安装</option>
+              </select>
+              <input name="trade" list="priceTradeOptions" placeholder="工种，留空自动识别">
+              <input name="process" list="priceProcessOptions" placeholder="工序，留空自动识别">
+              <input name="item" placeholder="分项名称/工作内容" required>
+              <input name="spec" placeholder="规格型号/做法">
+              <input name="unit" placeholder="单位" required>
+              <input name="price" type="number" step="0.0001" min="0" placeholder="单价" required>
+              <input name="taxRate" type="number" step="0.01" min="0" placeholder="税率%">
+              <input name="quantity" type="number" step="0.0001" min="0" placeholder="工程量">
+              <input name="amount" type="number" step="0.01" min="0" placeholder="金额">
+              <input name="region" placeholder="地区">
+              <input name="projectType" placeholder="项目类型">
+              <input name="project" placeholder="项目">
+              <input name="supplier" placeholder="供应商/分包商">
+              <input name="contractNo" placeholder="合同/结算编号">
+              <input name="priceDate" type="date" title="价格日期">
+              <input name="source" placeholder="来源">
+              <input name="remark" placeholder="付款条件">
+              <div class="price-form-actions">
+                <button class="primary" type="submit">保存</button>
+                <button id="priceLibraryCancelEditBtn" type="button">收起</button>
+              </div>
+            </form>
+            <datalist id="priceTradeOptions">
+              <option value="木工">
+              <option value="瓦工">
+              <option value="油工">
+              <option value="钢筋工">
+              <option value="混凝土工">
+              <option value="架子工">
+              <option value="防水工">
+              <option value="保温工">
+              <option value="土方工">
+              <option value="门窗幕墙工">
+              <option value="电工">
+              <option value="水工">
+              <option value="暖通工">
+              <option value="消防工">
+              <option value="弱电工">
+            </datalist>
+            <datalist id="priceProcessOptions">
+              <option value="模板支设">
+              <option value="钢筋制作安装">
+              <option value="混凝土浇筑">
+              <option value="砌筑">
+              <option value="抹灰找平">
+              <option value="腻子涂料">
+              <option value="防水施工">
+              <option value="脚手架搭拆">
+              <option value="保温施工">
+              <option value="土方开挖回填">
+              <option value="门窗幕墙安装">
+              <option value="电气配管配线">
+              <option value="给排水管道安装">
+              <option value="暖通空调安装">
+              <option value="消防系统安装">
+              <option value="弱电智能化安装">
+            </datalist>
+            <div class="price-data-ports">
+              <section class="price-data-port">
+                <div class="price-data-port-title">
+                  <strong>文件导入</strong>
+                  <span>Excel / JSON</span>
+                </div>
+                <form id="priceLibraryImportForm" class="price-import-form">
+                  <select name="category" title="默认类型">
+                    <option value="劳务分包">默认劳务分包</option>
+                    <option value="专业分包">默认专业分包</option>
+                  </select>
+                  <input name="source" placeholder="来源，如合同清单/结算清单">
+                  <input name="file" type="file" accept=".xlsx,.xls,.json" multiple required>
+                  <button id="priceLibraryTemplateBtn" type="button">下载模板</button>
+                  <button class="primary" type="submit">批量导入</button>
+                </form>
+              </section>
+              <section class="price-data-port">
+                <div class="price-data-port-title">
+                  <strong>自动提取</strong>
+                  <span>PM / 四版</span>
+                </div>
+                <div class="price-auto-extract-form">
+                  <select id="priceLibraryAutoExtractPlatform" title="平台">
+                    <option value="all">PM平台 + 四版平台</option>
+                    <option value="big-pm">PM平台</option>
+                    <option value="old-pm">四版平台</option>
+                  </select>
+                  <label class="price-check"><input id="priceLibraryAutoExtractLabor" type="checkbox" checked> 劳务分包</label>
+                  <label class="price-check"><input id="priceLibraryAutoExtractProfessional" type="checkbox" checked> 专业分包</label>
+                  <button id="priceLibraryAutoExtractBtn" class="primary" type="button">一键自动提取</button>
+                </div>
+                <div id="priceLibraryAutoExtractStatus" class="price-auto-extract-status">当前通过 Codex 桥接读取抓取成果，后续切换平台直连。</div>
+              </section>
+            </div>
+          </section>
+        </details>
+
+        <section class="price-library-summary" id="priceLibrarySummary"></section>
+
+        <section class="table-section price-sample-section">
+          <div class="section-head">
+            <h3>价格库样表</h3>
+            <select id="priceLibraryCategoryDisplayFilter" title="分包类型">
+              <option value="">全部分包类型</option>
+              <option value="劳务分包">劳务分包</option>
+              <option value="专业分包">专业分包</option>
+            </select>
+            <select id="priceLibraryMajorDisplayFilter" title="专业类别">
+              <option value="">全部</option>
+              <option value="土建">土建</option>
+              <option value="安装">安装</option>
+            </select>
+            <select id="priceLibraryProjectTypeDisplayFilter" title="工程类型">
+              <option value="">全部工程类型</option>
+            </select>
+          </div>
+          <div class="table-wrap compact-price-table price-sample-table-wrap">
+            <table id="priceLibraryClassificationTable"></table>
+          </div>
+        </section>
+
+        <section class="price-visual-grid">
+          <section class="table-section price-chart-panel">
+            <div class="section-head">
+              <h3>价格走势</h3>
+              <select id="priceLibraryAnalysisTargetFilter" title="分析对象">
+                <option value="">自动选择主要工序</option>
+              </select>
+            </div>
+            <div id="priceLibraryTrendChart" class="price-chart"></div>
+          </section>
+          <section class="table-section price-chart-panel">
+            <div class="section-head">
+              <h3>分公司对比</h3>
+            </div>
+            <div id="priceLibraryCompanyChart" class="price-chart"></div>
+          </section>
+        </section>
+
+        <section class="table-section">
+          <div class="section-head">
+            <h3>价差提醒</h3>
+          </div>
+          <div class="table-wrap compact-price-table price-spread-table-wrap">
+            <table id="priceLibrarySpreadTable"></table>
+          </div>
+        </section>
+
+        <section class="table-section">
+          <div class="section-head">
+            <h3>价格明细</h3>
+            <button id="priceLibraryRefreshBtn" class="small">刷新</button>
+          </div>
+          <div class="table-wrap price-library-table-wrap">
+            <table id="priceLibraryTable"></table>
+          </div>
+        </section>
+        <section class="scenario-hero">
+          <h3>劳务分包、专业分包价格库维护</h3>
+          <p>沉淀劳务分包、专业分包价格，支持按地区、时间、项目类型和分包商维度检索。</p>
+        </section>
+        <section class="scenario-grid">
+          <article class="scenario-card"><h4>价格入库</h4><p>合同清单、结算清单、采购订单、询价记录。</p></article>
+          <article class="scenario-card"><h4>维护字段</h4><p>工作内容、规格型号、单位、价格、税率、地区、供应商、适用条件。</p></article>
+          <article class="scenario-card"><h4>输出成果</h4><p>价格检索、价格曲线、异常价提醒、招采限价参考。</p></article>
+        </section>
+      </section>
+
+      <section id="blacklist-query" class="view scenario-view">
+        <section class="blacklist-panel">
+          <form id="blacklistForm" class="blacklist-search">
+            <label>
+              <span>查询对象</span>
+              <input name="query" id="blacklistKeyword" placeholder="企业名称 / 信用代码 / 法人 / 电话 / 账户 / 地址">
+            </label>
+            <button class="primary" type="submit">查询</button>
+            <button id="blacklistCodexBtn" type="button">天眼查穿透</button>
+            <button id="blacklistExportBtn" type="button">导出 Excel</button>
+          </form>
+          <div class="blacklist-stats" id="blacklistStats"></div>
+        </section>
+        <section class="relation-check-panel">
+          <form id="companyRelationForm" class="relation-check-form">
+            <label>
+              <span>企业 A</span>
+              <input name="left" placeholder="输入第一个企业名称">
+            </label>
+            <label>
+              <span>企业 B</span>
+              <input name="right" placeholder="输入第二个企业名称">
+            </label>
+            <button class="primary" type="submit">判断关联</button>
+          </form>
+          <div id="companyRelationResult" class="relation-check-result">输入两个企业后，可判断是否存在直接或间接关联路径。</div>
+        </section>
+        <section class="blacklist-map-section">
+          <div id="blacklistMindmap" class="blacklist-mindmap"></div>
+        </section>
+        <section class="table-section">
+          <div class="section-head">
+            <h3>查询结果明细</h3>
+          </div>
+          <div class="table-wrap">
+            <table id="blacklistTable"></table>
+          </div>
+        </section>
+        <section class="table-section compact-table-section">
+          <div class="section-head">
+            <h3>天眼查穿透任务</h3>
+            <button id="refreshBlacklistJobsBtn" class="small">刷新</button>
+          </div>
+          <div class="table-wrap">
+            <table id="blacklistJobsTable"></table>
+          </div>
+        </section>
+      </section>
+
+      <section id="collusion-check" class="view scenario-view">
+        <section class="scenario-hero">
+          <h3>围标串标识别</h3>
+          <p>对投标文件、报价清单、联系人和文件特征进行交叉比对，筛查异常关联和串标线索。</p>
+        </section>
+        <section class="scenario-grid">
+          <article class="scenario-card"><h4>识别材料</h4><p>投标报价、清单组价、文件作者、联系人、保证金、银行账户。</p></article>
+          <article class="scenario-card"><h4>异常线索</h4><p>报价规律异常、清单错误一致、文件元数据一致、联系人账户关联。</p></article>
+          <article class="scenario-card"><h4>输出成果</h4><p>疑似串标清单、证据摘要、风险等级、复核建议。</p></article>
+        </section>
+      </section>
+
+      <section id="settings" class="view">
+        <section class="interface-list" id="pluginList"></section>
+      </section>
+    </main>
+
+    <div id="cellDetailModal" class="modal hidden">
+      <div class="modal-backdrop" data-close-modal="cellDetailModal"></div>
+      <section class="modal-panel cell-detail-panel">
+        <div class="modal-head">
+          <div>
+            <h3 id="cellDetailTitle">完整内容</h3>
+            <p>当前单元格的全部文本</p>
+          </div>
+          <button class="icon-btn" data-close-modal="cellDetailModal" title="关闭">×</button>
+        </div>
+        <div id="cellDetailBody" class="cell-detail-body"></div>
+      </section>
+    </div>
+
+    <div id="issueModal" class="modal hidden">
+      <div class="modal-backdrop" data-close-modal="issueModal"></div>
+      <section class="modal-panel">
+        <div class="modal-head">
+          <div>
+            <h3>问题反馈</h3>
+            <p>记录数据有误、公司未上传、格式问题等核查事项。</p>
+          </div>
+          <button class="icon-btn" data-close-modal="issueModal" title="关闭">×</button>
+        </div>
+        <div class="issue-layout">
+          <section class="issue-card">
+            <div class="section-head compact">
+              <h3>未上传公司</h3>
+              <button id="refreshIssuesBtn" class="small">刷新</button>
+            </div>
+            <div id="missingList" class="tag-list"></div>
+          </section>
+          <section class="issue-card">
+            <form id="issueForm" class="issue-form">
+              <label>
+                <span>问题类型</span>
+                <select name="issueType">
+                  <option value="数据有误">数据有误</option>
+                  <option value="公司报表未上传">公司报表未上传</option>
+                  <option value="报表格式问题">报表格式问题</option>
+                  <option value="其他">其他</option>
+                </select>
+              </label>
+              <label>
+                <span>涉及公司</span>
+                <input name="company" id="issueCompany" list="companyOptions" placeholder="可不填">
+                <datalist id="companyOptions"></datalist>
+              </label>
+              <label class="full">
+                <span>问题说明</span>
+                <textarea name="description" rows="3" placeholder="例如：五公司定案造价与审核表不一致" required></textarea>
+              </label>
+              <button class="primary" type="submit">登记问题</button>
+            </form>
+          </section>
+        </div>
+        <section class="issue-card">
+          <div class="section-head compact">
+            <h3>问题清单</h3>
+          </div>
+          <div class="table-wrap">
+            <table id="issuesTable"></table>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <script src="/static/app.js?v=202608011030"></script>
+  </body>
+</html>

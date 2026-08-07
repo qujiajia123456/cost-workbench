@@ -1,0 +1,101 @@
+成本部工作台开发说明
+
+一、启动方式
+1. 双击 start_windows.bat 可直接启动。
+2. 启动后访问：http://127.0.0.1:8899/
+3. 关闭黑色命令窗口后，网页服务会停止。
+
+二、主要代码文件
+1. server.py
+   后端主程序，负责：
+   - 上传 Excel
+   - 解析分公司报表
+   - 汇总数据
+   - 导出 Excel 工作簿
+   - 生成 01、02、03、05、06 等工作表
+
+2. static/index.html
+   页面结构。
+
+3. static/styles.css
+   页面样式、logo、颜色、布局。
+
+4. static/app.js
+   页面交互逻辑，包括上传、删除、导出、问题反馈等。
+
+5. templates/
+   Excel 模板文件。
+
+6. data/db.json
+   当前上传记录和问题反馈数据。开发测试时可备份后清空。
+
+三、运行环境
+1. 文件夹内已带便携 Python：
+   .runtime/python/python.exe
+2. 一般不需要在电脑上安装 Python。
+3. requirements.txt 记录了依赖包，当前主要依赖 openpyxl。
+
+四、开发调试建议
+1. 修改代码后，关闭原来的黑色窗口，再双击 start_windows.bat 重新启动。
+2. 修改网页样式或 JS 后，浏览器按 Ctrl+F5 强制刷新。
+3. 如果启动失败，双击 diagnose_windows.bat 查看诊断信息。
+4. 开发前建议先复制一份整个文件夹作为备份。
+
+四-1、黑名单天眼查穿透中心处理模式
+1. 普通用户只访问网页，不要求安装 Codex。
+2. 网页点击“天眼查穿透”后，server.py 会生成任务文件：
+   data/codex_blacklist_jobs/*.json
+   任务采用 tender-collusion-screening-cn 的围标串标线索筛查口径，并显示预计完成时间。
+3. 安装 Codex 的中心电脑运行：
+   start_blacklist_codex_worker.bat
+   或：
+   python tools/blacklist_codex_worker.py --next
+   打开天眼查搜索页：
+   python tools/blacklist_codex_worker.py --open JOB_ID
+4. Codex 处理任务后按任务文件 preferredOutput 写回 JSON：
+   data/blacklist_results/*.json
+5. 回写 JSON 至少包含：
+   query、source、checkedAt、entities。
+   entities 中建议包含：
+   name、creditCode、riskLevel、status、legalRep、shareholders、contacts、bankAccounts、address、reason、source、updatedAt。
+6. 网页重新查询时，会合并 data/db.json 内置名单和 data/blacklist_results 的回写企业，生成关系图和 Excel。
+
+四-2、材料采购价格横向对比 Codex 处理模式
+1. 网页点击“发布指令并建表”后，server.py 会生成任务文件：
+   data/codex_material_jobs/*.json
+2. 安装 Codex 的中心电脑运行：
+   start_material_codex_worker.bat
+   或：
+   python tools/material_codex_worker.py --next
+3. 复制下一条任务提示词：
+   python tools/material_codex_worker.py --copy
+4. 打开集采/PM 平台入口：
+   python tools/material_codex_worker.py --open-platform
+5. Codex 按任务要求导出“中标价格对比分析”“中标价格查询”“招标结果台帐”“项目基本信息”后，回到网页“导入数据建表”一次上传源数据，网页会按技能规则生成四张表工作簿。
+
+五、当前重点业务逻辑位置
+1. 竣工结算报表解析：
+   server.py 中 SettlementPlugin.parse
+
+2. 竣工及未定案工程汇总：
+   server.py 中 write_summary_sheet
+
+3. 01 各单位竣工结算定案工程一览表：
+   server.py 中 export_settled_details
+
+4. 02 完成情况通报：
+   server.py 中 write_completion_notice_sheet
+
+5. 03 递交情况考核：
+   server.py 中 write_submit_assessment_sheet
+
+6. 05 建安主业单位项目竣工结算定案情况：
+   server.py 中 write_main_business_settlement_sheet_v2
+
+7. 06 定案严重逾期工程统计情况通报：
+   server.py 中 write_quarter_severe_overdue_notice_sheet
+
+六、注意事项
+1. 不要只移动 bat 文件，必须移动整个文件夹。
+2. 不建议把文件夹放在系统盘很深的路径下。
+3. 如果要多人继续开发，建议用 Git 管理版本，避免互相覆盖。
