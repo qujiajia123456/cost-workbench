@@ -26,6 +26,7 @@ _qa_word_export/
 _word_templates/
 /exports/
 /outputs/
+/dist/
 /_notice_inspect.xlsx
 /_verify_*.xlsx
 /*.xlsx

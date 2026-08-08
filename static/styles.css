@@ -1730,6 +1730,13 @@ button.loading {
   color: #9a6700;
 }
 
+.capture-status.compact {
+  max-width: 760px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .warning-check-section.hidden {
   display: none;
 }

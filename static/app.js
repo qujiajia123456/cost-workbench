@@ -1,5 +1,5 @@
 const PM_WARNING_CHART_DATA_URL = "/api/pm-warning-data";
-const APP_VERSION = "v202608011030";
+const APP_VERSION = "v202608071015";
 
 const PM_WARNING_REPORT_KEYS = [
   "reportCompany",
@@ -1250,8 +1250,41 @@ function renderPmWarningPie(container, stats) {
 function setPmWarningCaptureStatus(message, tone = "") {
   const status = $("#pmWarningCaptureStatus");
   if (!status) return;
-  status.textContent = message || "";
-  status.className = `capture-status ${tone}`.trim();
+  const normalized = pmWarningNormalizeCaptureMessage(message, tone);
+  status.textContent = normalized.message || "";
+  status.className = `capture-status ${normalized.tone}`.trim();
+  status.title = normalized.title || "";
+}
+
+function pmWarningHasDisplayedData() {
+  const totals = state.pmWarningTotals || {};
+  const projects = state.pmWarningSources || [];
+  return Boolean(
+    projects.length
+    || Number(totals.inProgress)
+    || Number(totals.total)
+    || Number(totals.red)
+    || Number(totals.blue)
+    || Number(totals.normal)
+  );
+}
+
+function pmWarningNormalizeCaptureMessage(message = "", tone = "") {
+  const text = String(message || "").trim();
+  if (!text) return { message: "", tone: "" };
+  const isDebugPortMessage = /未检测到|未连接到|调试端口|9222|9333/.test(text);
+  if (!isDebugPortMessage) return { message: text, tone };
+  const platform = /大PM|9333|Chrome/.test(text) ? "大PM平台" : "四版平台";
+  const port = platform === "大PM平台" ? "9333" : "9222";
+  const browser = platform === "大PM平台" ? "Chrome" : "Edge";
+  const shortMessage = pmWarningHasDisplayedData()
+    ? `当前显示已抓取数据；${platform}重新抓数前需连接 ${port} 调试窗口。`
+    : `${platform}重新抓数前需先打开专用 ${browser} 调试窗口（端口 ${port}）。`;
+  return {
+    message: shortMessage,
+    tone: "warn compact",
+    title: text,
+  };
 }
 
 function pmWarningPendingDetailCount(source = {}) {
@@ -1299,6 +1332,8 @@ async function refreshPmWarningDataFromServer(message = "红蓝预警已刷新�
     setPmWarningCaptureStatus(pendingMessage, "warn");
   } else if (message) {
     setPmWarningCaptureStatus(message, "success");
+  } else {
+    setPmWarningCaptureStatus("");
   }
   if (message) toast(message);
 }
@@ -1380,6 +1415,10 @@ async function setPmWarningPlatform(value, options = {}) {
   });
   if (options.load !== false) await refreshPmWarningChartData("all");
   renderPmWarnings();
+  const status = $("#pmWarningCaptureStatus");
+  if (status && /调试窗口|调试端口|9222|9333/.test(status.textContent || "")) {
+    setPmWarningCaptureStatus("");
+  }
 }
 
 async function exportPmWarnings() {
